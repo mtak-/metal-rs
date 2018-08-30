@@ -7,6 +7,7 @@
 
 use super::*;
 
+#[cfg(target_os = "macos")]
 use cocoa::foundation::NSRange;
 
 pub enum MTLBuffer {}
@@ -32,6 +33,7 @@ impl BufferRef {
         }
     }
 
+    #[cfg(target_os = "macos")]
     pub fn did_modify_range(&self, range: NSRange) {
         unsafe {
             msg_send![self, didModifyRange:range]

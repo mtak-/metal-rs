@@ -24,27 +24,63 @@ use std::ptr;
 #[repr(u64)]
 #[derive(Copy, Clone, Debug)]
 pub enum MTLFeatureSet {
+    #[cfg(target_os = "ios")]
     iOS_GPUFamily1_v1 = 0,
+    #[cfg(target_os = "ios")]
     iOS_GPUFamily2_v1 = 1,
+    #[cfg(target_os = "ios")]
     iOS_GPUFamily1_v2 = 2,
+    #[cfg(target_os = "ios")]
     iOS_GPUFamily2_v2 = 3,
+    #[cfg(target_os = "ios")]
     iOS_GPUFamily3_v1 = 4,
+    #[cfg(target_os = "ios")]
     iOS_GPUFamily1_v3 = 5,
+    #[cfg(target_os = "ios")]
     iOS_GPUFamily2_v3 = 6,
+    #[cfg(target_os = "ios")]
     iOS_GPUFamily3_v2 = 7,
+    #[cfg(target_os = "ios")]
     iOS_GPUFamily1_v4 = 8,
+    #[cfg(target_os = "ios")]
     iOS_GPUFamily2_v4 = 9,
+    #[cfg(target_os = "ios")]
     iOS_GPUFamily3_v3 = 10,
+    #[cfg(target_os = "ios")]
     iOS_GPUFamily4_v1 = 11,
+    // #[cfg(target_os = "ios")]
+    // iOS_GPUFamily1_v5 = 12,
+    // #[cfg(target_os = "ios")]
+    // iOS_GPUFamily2_v5 = 13,
+    // #[cfg(target_os = "ios")]
+    // iOS_GPUFamily3_v4 = 14,
+    // #[cfg(target_os = "ios")]
+    // iOS_GPUFamily4_v2 = 15,
+    
+    #[cfg(not(any(target_os = "ios", target_os = "macos")))]
     tvOS_GPUFamily1_v1 = 30000,
+    #[cfg(not(any(target_os = "ios", target_os = "macos")))]
     tvOS_GPUFamily1_v2 = 30001,
+    #[cfg(not(any(target_os = "ios", target_os = "macos")))]
     tvOS_GPUFamily1_v3 = 30002,
+    #[cfg(not(any(target_os = "ios", target_os = "macos")))]
     tvOS_GPUFamily2_v1 = 30003,
+    // #[cfg(not(any(target_os = "ios", target_os = "macos")))]
+    // tvOS_GPUFamily1_v4 = 30004,
+    // #[cfg(not(any(target_os = "ios", target_os = "macos")))]
+    // tvOS_GPUFamily2_v2 = 30005,
+
+    #[cfg(target_os = "macos")]
     macOS_GPUFamily1_v1 = 10000,
+    #[cfg(target_os = "macos")]
     macOS_GPUFamily1_v2 = 10001,
+    // #[cfg(target_os = "macos")]
     //macOS_ReadWriteTextureTier2 = 10002, TODO: Uncomment when feature tables updated
+    #[cfg(target_os = "macos")]
     macOS_GPUFamily1_v3 = 10003,
+    // #[cfg(target_os = "macos")]
     //macOS_GPUFamily1_v4 = 10004,
+    // #[cfg(target_os = "macos")]
     //macOS_GPUFamily2_v1 = 10005,
 }
 
@@ -86,13 +122,21 @@ impl MTLFeatureSet {
     fn os_version(&self) -> u32 {
         use MTLFeatureSet::*;
         match self {
+            #[cfg(target_os = "ios")]
             iOS_GPUFamily1_v1 | iOS_GPUFamily2_v1 => 8,
+            #[cfg(target_os = "ios")]
             iOS_GPUFamily1_v2 | iOS_GPUFamily2_v2 | iOS_GPUFamily3_v1 => 9,
+            #[cfg(target_os = "ios")]
             iOS_GPUFamily1_v3 | iOS_GPUFamily2_v3 | iOS_GPUFamily3_v2 => 10,
+            #[cfg(target_os = "ios")]
             iOS_GPUFamily1_v4 | iOS_GPUFamily2_v4 | iOS_GPUFamily3_v3 | iOS_GPUFamily4_v1 => 11,
+            #[cfg(not(any(target_os = "ios", target_os = "macos")))]
             tvOS_GPUFamily1_v1 => 9,
+            #[cfg(not(any(target_os = "ios", target_os = "macos")))]
             tvOS_GPUFamily1_v2 => 10,
+            #[cfg(not(any(target_os = "ios", target_os = "macos")))]
             tvOS_GPUFamily1_v3 | tvOS_GPUFamily2_v1 => 11,
+            #[cfg(target_os = "macos")]
             macOS_GPUFamily1_v1 | macOS_GPUFamily1_v2 | macOS_GPUFamily1_v3 => 10,
         }
     }
@@ -100,24 +144,31 @@ impl MTLFeatureSet {
     fn gpu_family(&self) -> u32 {
         use MTLFeatureSet::*;
         match self {
+            #[cfg(target_os = "ios")]
             iOS_GPUFamily1_v1
             | iOS_GPUFamily1_v2
             | iOS_GPUFamily1_v3
-            | iOS_GPUFamily1_v4
-            | tvOS_GPUFamily1_v1
+            | iOS_GPUFamily1_v4 => 1,
+            #[cfg(not(any(target_os = "ios", target_os = "macos")))]
+            tvOS_GPUFamily1_v1
             | tvOS_GPUFamily1_v2
-            | tvOS_GPUFamily1_v3
-            | macOS_GPUFamily1_v1
+            | tvOS_GPUFamily1_v3 => 1,
+            #[cfg(target_os = "macos")]
+            macOS_GPUFamily1_v1
             | macOS_GPUFamily1_v2
             | macOS_GPUFamily1_v3 => 1,
+            #[cfg(target_os = "ios")]
             iOS_GPUFamily2_v1
             | iOS_GPUFamily2_v2
             | iOS_GPUFamily2_v3
-            | iOS_GPUFamily2_v4
-            | tvOS_GPUFamily2_v1 => 2,
+            | iOS_GPUFamily2_v4 => 2,
+            #[cfg(not(any(target_os = "ios", target_os = "macos")))]
+            tvOS_GPUFamily2_v1 => 2,
+            #[cfg(target_os = "ios")]
             iOS_GPUFamily3_v1
             | iOS_GPUFamily3_v2
             | iOS_GPUFamily3_v3 => 3,
+            #[cfg(target_os = "ios")]
             iOS_GPUFamily4_v1 => 4,
         }
     }
@@ -125,23 +176,33 @@ impl MTLFeatureSet {
     fn version(&self) -> u32 {
         use MTLFeatureSet::*;
         match self {
+            #[cfg(target_os = "ios")]
             iOS_GPUFamily1_v1
             | iOS_GPUFamily2_v1
             | iOS_GPUFamily3_v1
-            | iOS_GPUFamily4_v1
-            | macOS_GPUFamily1_v1
-            | tvOS_GPUFamily1_v1
+            | iOS_GPUFamily4_v1 => 1,
+            #[cfg(target_os = "macos")]
+            macOS_GPUFamily1_v1 => 1,
+            #[cfg(not(any(target_os = "ios", target_os = "macos")))]
+            tvOS_GPUFamily1_v1
             | tvOS_GPUFamily2_v1 => 1,
+            #[cfg(target_os = "ios")]
             iOS_GPUFamily1_v2
             | iOS_GPUFamily2_v2
-            | iOS_GPUFamily3_v2
-            | macOS_GPUFamily1_v2
-            | tvOS_GPUFamily1_v2 => 2,
+            | iOS_GPUFamily3_v2 => 2,
+            #[cfg(target_os = "macos")]
+            macOS_GPUFamily1_v2 => 2,
+            #[cfg(not(any(target_os = "ios", target_os = "macos")))]
+            tvOS_GPUFamily1_v2 => 2,
+            #[cfg(target_os = "ios")]
             iOS_GPUFamily1_v3
             | iOS_GPUFamily2_v3
-            | iOS_GPUFamily3_v3
-            | macOS_GPUFamily1_v3
-            | tvOS_GPUFamily1_v3 => 3,
+            | iOS_GPUFamily3_v3 => 3,
+            #[cfg(target_os = "macos")]
+            macOS_GPUFamily1_v3 => 3,
+            #[cfg(not(any(target_os = "ios", target_os = "macos")))]
+            tvOS_GPUFamily1_v3 => 3,
+            #[cfg(target_os = "ios")]
             iOS_GPUFamily1_v4
             | iOS_GPUFamily2_v4 => 4,
         }
@@ -1269,6 +1330,7 @@ impl MTLFeatureSet {
     }
 }
 
+// requires ios/tvos 11.0+ or macos 10.13+
 #[allow(non_camel_case_types)]
 #[repr(u64)]
 #[derive(Copy, Clone, Debug)]
@@ -1287,6 +1349,7 @@ bitflags! {
 #[link(name = "Metal", kind = "framework")]
 extern {
     fn MTLCreateSystemDefaultDevice() -> *mut MTLDevice;
+    #[cfg(target_os = "macos")]
     fn MTLCopyAllDevices() -> *mut Object; //TODO: Array
 }
 
@@ -1332,17 +1395,14 @@ impl Device {
         unsafe { Device(MTLCreateSystemDefaultDevice()) }
     }
 
+    #[cfg(target_os = "macos")]
     pub fn all() -> Vec<Device> {
-        if cfg!(target_os = "ios") {
-            vec![Device::system_default()]
-        } else {
-            unsafe {
-                let array = MTLCopyAllDevices();
-                let count: NSUInteger = msg_send![array, count];
-                (0 .. count)
-                    .map(|i| msg_send![array, objectAtIndex: i])
-                    .collect()
-            }
+        unsafe {
+            let array = MTLCopyAllDevices();
+            let count: NSUInteger = msg_send![array, count];
+            (0 .. count)
+                .map(|i| msg_send![array, objectAtIndex: i])
+                .collect()
         }
     }
 }
@@ -1355,18 +1415,16 @@ impl DeviceRef {
         }
     }
 
-    pub fn vendor(&self) -> &str {
-        unsafe {
-            let name: &NSString = msg_send![self, vendorName];
-            name.as_str()
-        }
+    #[cfg(feature = "private")]
+    pub unsafe fn vendor(&self) -> &str {
+        let name: &NSString = msg_send![self, vendorName];
+        name.as_str()
     }
 
-    pub fn family_name(&self) -> &str {
-        unsafe {
-            let name: &NSString = msg_send![self, familyName];
-            name.as_str()
-        }
+    #[cfg(feature = "private")]
+    pub unsafe fn family_name(&self) -> &str {
+        let name: &NSString = msg_send![self, familyName];
+        name.as_str()
     }
 
     pub fn registry_id(&self) -> u64 {
@@ -1375,12 +1433,14 @@ impl DeviceRef {
         }
     }
 
+    // requires ios 9.0+ or macos/tvos
     pub fn max_threads_per_threadgroup(&self) -> MTLSize {
         unsafe {
             msg_send![self, maxThreadsPerThreadgroup]
         }
     }
 
+    #[cfg(target_os = "macos")]
     pub fn is_low_power(&self) -> bool {
         unsafe {
             match msg_send![self, isLowPower] {
@@ -1391,6 +1451,7 @@ impl DeviceRef {
         }
     }
 
+    #[cfg(target_os = "macos")]
     pub fn is_headless(&self) -> bool {
         unsafe {
             match msg_send![self, isHeadless] {
@@ -1411,6 +1472,7 @@ impl DeviceRef {
         }
     }
 
+    // requires ios 9.0+ or macos/tvos
     pub fn supports_sample_count(&self, count: NSUInteger) -> bool {
         unsafe {
             match msg_send![self, supportsTextureSampleCount:count] {
@@ -1421,6 +1483,7 @@ impl DeviceRef {
         }
     }
 
+    #[cfg(target_os = "macos")]
     pub fn d24_s8_supported(&self) -> bool {
         unsafe {
             match msg_send![self, isDepth24Stencil8PixelFormatSupported] {
@@ -1538,15 +1601,25 @@ impl DeviceRef {
         }
     }
 
-    pub fn new_compute_pipeline_state(&self, descriptor: &ComputePipelineDescriptorRef) -> Result<ComputePipelineState, String> {
+    pub fn new_compute_pipeline_state_with_function(&self, function: &FunctionRef) -> Result<ComputePipelineState, String> {
         unsafe {
             let pipeline_state: *mut MTLComputePipelineState = try_objc!{ err =>
-                msg_send![self, newComputePipelineStateWithDescriptor:descriptor
-                                                               error:&mut err]
+                msg_send![self, newComputePipelineStateWithFunction:function
+                                                              error:&mut err]
             };
 
             Ok(ComputePipelineState::from_ptr(pipeline_state))
         }
+    }
+
+    #[cfg(feature = "private")]
+    pub unsafe fn new_compute_pipeline_state(&self, descriptor: &ComputePipelineDescriptorRef) -> Result<ComputePipelineState, String> {
+        let pipeline_state: *mut MTLComputePipelineState = try_objc!{ err =>
+            msg_send![self, newComputePipelineStateWithDescriptor:descriptor
+                                                            error:&mut err]
+        };
+
+        Ok(ComputePipelineState::from_ptr(pipeline_state))
     }
 
     pub fn new_buffer(&self, length: u64, options: MTLResourceOptions) -> Buffer {
@@ -1605,12 +1678,15 @@ impl DeviceRef {
         }
     }
 
+
+    // requires ios/tvos 10.0+ or macos 10.13+
     pub fn heap_buffer_size_and_align(&self, length: NSUInteger, options: MTLResourceOptions) -> MTLSizeAndAlign {
         unsafe {
             msg_send![self, heapBufferSizeAndAlignWithLength: length options: options]
         }
     }
 
+    // requires ios/tvos 10.0+ or macos 10.13+
     pub fn heap_texture_size_and_align(&self, descriptor: &TextureDescriptorRef) -> MTLSizeAndAlign {
         unsafe {
             msg_send![self, heapTextureSizeAndAlignWithDescriptor: descriptor]

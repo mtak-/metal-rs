@@ -36,6 +36,7 @@ pub enum MTLIndexType {
 pub enum MTLVisibilityResultMode {
     Disabled = 0,
     Boolean = 1,
+    // requires ios 9.0+ or macos/tvos
     Counting = 2,
 }
 
@@ -54,6 +55,7 @@ pub enum MTLWinding {
     CounterClockwise = 1,
 }
 
+// requires ios 9.0+ or macos/tvos
 #[repr(u64)]
 #[derive(Copy, Clone, Debug, Eq, PartialEq, Hash)]
 pub enum MTLDepthClipMode {
@@ -68,11 +70,13 @@ pub enum MTLTriangleFillMode {
     Lines = 1,
 }
 
+// requires ios 9.0+ or macos/tvos
 bitflags! {
     #[allow(non_upper_case_globals)]
     pub struct MTLBlitOption: NSUInteger {
         const DepthFromDepthStencil   = 1 << 0;
         const StencilFromDepthStencil = 1 << 1;
+        #[cfg(not(target_os = "macos"))]
         const RowLinearPVRTC          = 1 << 2;
     }
 }
@@ -97,6 +101,7 @@ pub struct MTLViewport {
     pub zfar: f64,
 }
 
+// requires ios 9.0+ or macos/tvos
 #[repr(C)]
 #[derive(Copy, Clone, Debug)]
 pub struct MTLDrawPrimitivesIndirectArguments {
@@ -106,6 +111,7 @@ pub struct MTLDrawPrimitivesIndirectArguments {
     pub baseInstance: u32
 }
 
+// requires ios 9.0+ or macos/tvos
 #[repr(C)]
 #[derive(Copy, Clone, Debug)]
 pub struct MTLDrawIndexedPrimitivesIndirectArguments {
@@ -198,6 +204,7 @@ impl RenderCommandEncoderRef {
         }
     }
 
+    // requires ios/tvos 11.0+ or macos
     pub fn set_depth_clip_mode(&self, mode: MTLDepthClipMode) {
         unsafe {
             msg_send![self, setDepthClipMode:mode]
@@ -245,6 +252,7 @@ impl RenderCommandEncoderRef {
         }
     }
 
+    // requires ios 9.0+ or macos/tvos
     pub fn set_stencil_front_back_reference_value(&self, front: u32, back: u32) {
         unsafe {
             msg_send![self, setStencilFrontReferenceValue:front
@@ -262,6 +270,7 @@ impl RenderCommandEncoderRef {
 
     // Specifying Resources for a Vertex Shader Function
 
+    // requires ios 8.3+ or macos/tvos
     pub fn set_vertex_bytes(&self, index: NSUInteger, length: NSUInteger, bytes: *const libc::c_void) {
         unsafe {
             msg_send![self,
@@ -353,6 +362,7 @@ impl RenderCommandEncoderRef {
 
     // Specifying Resources for a Fragment Shader Function
 
+    // requires ios 8.3+ or macos/tvos
     pub fn set_fragment_bytes(&self, index: NSUInteger, length: NSUInteger, bytes: *const libc::c_void) {
         unsafe {
             msg_send![self,
@@ -467,6 +477,7 @@ impl RenderCommandEncoderRef {
         }
     }
 
+    // requires ios >= 9.0 or macos/tvos
     pub fn draw_primitives_instanced_base_instance(
         &self, primitive_type: MTLPrimitiveType, vertex_start: NSUInteger, vertex_count: NSUInteger, instance_count: NSUInteger, base_instance: NSUInteger
     ) {
@@ -481,6 +492,7 @@ impl RenderCommandEncoderRef {
         }
     }
 
+    // requires ios >= 9.0 or macos/tvos
     pub fn draw_primitives_indirect(
         &self, primitive_type: MTLPrimitiveType, indirect_buffer: &BufferRef, indirect_buffer_offset: NSUInteger
     ) {
@@ -522,6 +534,7 @@ impl RenderCommandEncoderRef {
         }
     }
 
+    // requires ios >= 9.0 or macos/tvos
     pub fn draw_indexed_primitives_instanced_base_instance(
         &self, primitive_type: MTLPrimitiveType, index_count: NSUInteger, index_type: MTLIndexType, index_buffer: &BufferRef, index_buffer_offset: NSUInteger, instance_count: NSUInteger, base_vertex: NSInteger, base_instance: NSUInteger
     ) {
@@ -539,6 +552,7 @@ impl RenderCommandEncoderRef {
         }
     }
 
+    // requires ios >= 9.0 or macos/tvos
     pub fn draw_indexed_primitives_indirect(
         &self, primitive_type: MTLPrimitiveType, index_type: MTLIndexType, index_buffer: &BufferRef, index_buffer_offset: NSUInteger, indirect_buffer: &BufferRef, indirect_buffer_offset: NSUInteger
     ) {
@@ -566,6 +580,7 @@ impl RenderCommandEncoderRef {
         }
     }
 
+    // requires ios/tvos >= 11.0 or macos 10.13+
     pub fn use_heap(&self, heap: &HeapRef) {
         unsafe {
             msg_send![self, useHeap:heap]
@@ -583,6 +598,7 @@ foreign_obj_type! {
 }
 
 impl BlitCommandEncoderRef {
+    #[cfg(target_os = "macos")]
     pub fn synchronize_resource(&self, resource: &ResourceRef) {
         unsafe {
             msg_send![self, synchronizeResource:resource]
@@ -636,6 +652,7 @@ impl BlitCommandEncoderRef {
         }
     }
 
+    // requires ios 9.0 or macos/tvos
     pub fn copy_from_buffer_to_texture(&self,
         source_buffer: &BufferRef, source_offset: NSUInteger, source_bytes_per_row: NSUInteger, source_bytes_per_image: NSUInteger, source_size: MTLSize,
         destination_texture: &TextureRef, destination_slice: NSUInteger, destination_level: NSUInteger, destination_origin: MTLOrigin,
@@ -657,6 +674,7 @@ impl BlitCommandEncoderRef {
         }
     }
 
+    // requires ios 9.0 or macos/tvos
     pub fn copy_from_texture_to_buffer(&self,
         source_texture: &TextureRef, source_slice: NSUInteger, source_level: NSUInteger, source_origin: MTLOrigin, source_size: MTLSize,
         destination_buffer: &BufferRef, destination_offset: NSUInteger, destination_bytes_per_row: NSUInteger, destination_bytes_per_image: NSUInteger,
@@ -770,6 +788,7 @@ impl ComputeCommandEncoderRef {
         }
     }
 
+    // requires ios 8.3+ or macos/tvos
     pub fn set_bytes(&self, index: NSUInteger, length: NSUInteger, bytes: *const libc::c_void) {
         unsafe {
             msg_send![self,
@@ -789,6 +808,7 @@ impl ComputeCommandEncoderRef {
         }
     }
 
+    // requires ios 9.0+ or macos/tvos
     pub fn dispatch_thread_groups_indirect(&self, buffer: &BufferRef, offset: NSUInteger, threads_per_thread_group: MTLSize) {
         unsafe {
             msg_send![self,
@@ -799,6 +819,7 @@ impl ComputeCommandEncoderRef {
         }
     }
 
+    // requires ios/tvos 11.0+ or macos 10.13+
     pub fn use_resource(&self, resource: &ResourceRef, usage: MTLResourceUsage) {
         unsafe {
             msg_send![self,
@@ -808,6 +829,7 @@ impl ComputeCommandEncoderRef {
         }
     }
 
+    // requires ios/tvos 11.0+ or macos 10.13+
     pub fn use_heap(&self, heap: &HeapRef) {
         unsafe {
             msg_send![self, useHeap:heap]
@@ -815,6 +837,7 @@ impl ComputeCommandEncoderRef {
     }
 }
 
+// requires ios/tvos 11.0+ macos 10.13+
 pub enum MTLArgumentEncoder {}
 
 foreign_obj_type! {

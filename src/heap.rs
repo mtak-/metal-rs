@@ -9,6 +9,7 @@ use super::*;
 
 use cocoa::foundation::NSUInteger;
 
+// requires ios/tvos 10.0+ or macos10.13+
 pub enum MTLHeap {}
 
 foreign_obj_type! {
@@ -50,7 +51,7 @@ impl HeapRef {
 
     pub fn max_available_size(&self, alignment: NSUInteger) -> NSUInteger {
         unsafe {
-            msg_send![self, maxAvailableSize: alignment]
+            msg_send![self, maxAvailableSizeWithAlignment: alignment]
         }
     }
 
@@ -78,6 +79,7 @@ impl HeapRef {
     }
 }
 
+// requires ios/tvos 10.0+ or macos10.13+
 pub enum MTLHeapDescriptor {}
 
 foreign_obj_type! {

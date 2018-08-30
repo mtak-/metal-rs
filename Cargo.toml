@@ -13,6 +13,10 @@ license = "MIT OR Apache-2.0"
 [package.metadata.docs.rs]
 default-target = "x86_64-apple-darwin"
 
+[features]
+default = []
+private = []
+
 [dependencies]
 cocoa = "0.18"
 core-graphics = "0.17"

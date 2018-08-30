@@ -22,10 +22,13 @@ pub enum MTLTextureType {
     D2Array = 3,
     D2Multisample = 4,
     Cube = 5,
+    // requires iOS 11.0+ or macos
+    #[cfg(any(target_os = "macos", target_os = "ios"))]
     CubeArray = 6,
     D3 = 7,
 }
 
+// requires ios 9.0+ or macos/tvos
 bitflags! {
     pub struct MTLTextureUsage: NSUInteger {
         const Unknown         = 0x0000;
@@ -162,36 +165,42 @@ impl TextureDescriptorRef {
         }
     }
 
+    // requires ios 9.0+ or macos/tvos
     pub fn cpu_cache_mode(&self) -> MTLCPUCacheMode {
         unsafe {
             msg_send![self, cpuCacheMode]
         }
     }
 
+    // requires ios 9.0+ or macos/tvos
     pub fn set_cpu_cache_mode(&self, mode: MTLCPUCacheMode) {
         unsafe {
             msg_send![self, setCpuCacheMode:mode]
         }
     }
 
+    // requires ios 9.0+ or macos/tvos
     pub fn storage_mode(&self) -> MTLStorageMode {
         unsafe {
             msg_send![self, storageMode]
         }
     }
 
+    // requires ios 9.0+ or macos/tvos
     pub fn set_storage_mode(&self, mode: MTLStorageMode) {
         unsafe {
             msg_send![self, setStorageMode:mode]
         }
     }
 
+    // requires ios 9.0+ or macos/tvos
     pub fn usage(&self) -> MTLTextureUsage {
         unsafe {
             msg_send![self, usage]
         }
     }
 
+    // requires ios 9.0+ or macos/tvos
     pub fn set_usage(&self, usage: MTLTextureUsage) {
         unsafe {
             msg_send![self, setUsage:usage]
@@ -209,42 +218,49 @@ foreign_obj_type! {
 }
 
 impl TextureRef {
+    #[deprecated(since="macOS 10.12, iOS/tvOS 10.0")]
     pub fn root_resource(&self) -> Option<&ResourceRef> {
        unsafe {
            msg_send![self, rootResource]
        }
     }
 
+    // requires ios 9.0+ or macos/tvos
     pub fn parent_texture(&self) -> Option<&TextureRef> {
         unsafe {
             msg_send![self, parentTexture]
         }
     }
 
+    // requires ios 9.0+ or macos/tvos
     pub fn parent_relative_level(&self) -> NSUInteger {
         unsafe {
             msg_send![self, parentRelativeLevel]
         }
     }
 
+    // requires ios 9.0+ or macos/tvos
     pub fn parent_relative_slice(&self) -> NSUInteger {
         unsafe {
             msg_send![self, parentRelativeSlice]
         }
     }
 
+    // requires ios 9.0+ or macos 10.12+ or tvos
     pub fn buffer(&self) -> Option<&BufferRef> {
         unsafe {
             msg_send![self, buffer]
         }
     }
 
+    // requires ios 9.0+ or macos 10.12+ or tvos
     pub fn buffer_offset(&self) -> NSUInteger {
         unsafe {
             msg_send![self, bufferOffset]
         }
     }
 
+    // requires ios 9.0+ or macos 10.12+ or tvos
     pub fn buffer_stride(&self) -> NSUInteger {
         unsafe {
             msg_send![self, bufferBytesPerRow]
@@ -299,6 +315,7 @@ impl TextureRef {
         }
     }
 
+    // requires ios 9.0+ or macos/tvos
     pub fn usage(&self) -> MTLTextureUsage {
         unsafe {
             msg_send![self, usage]
@@ -361,6 +378,7 @@ impl TextureRef {
         }
     }
 
+    // requires ios 9.0+ or macos/tvos
     pub fn new_texture_view_from_slice(&self, pixel_format: MTLPixelFormat, texture_type: MTLTextureType, mipmap_levels: NSRange, slices: NSRange) -> Texture {
         unsafe {
             msg_send![self, newTextureViewWithPixelFormat:pixel_format

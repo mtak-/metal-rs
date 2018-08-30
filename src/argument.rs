@@ -89,9 +89,46 @@ pub enum MTLDataType {
     Bool3 = 55,
     Bool4 = 56,
 
+    // requires ios/tvos 11.0+ or macos 10.13+
     Texture = 58,
+    // requires ios/tvos 11.0+ or macos 10.13+
     Sampler = 59,
+    // requires ios/tvos 11.0+ or macos 10.13+
     Pointer = 60,
+
+    // all of the below require ios 11.0
+    #[cfg(target_os = "ios")]
+    R8Unorm = 62,
+    #[cfg(target_os = "ios")]
+    R8Snorm = 63,
+    #[cfg(target_os = "ios")]
+    R16Unorm = 64,
+    #[cfg(target_os = "ios")]
+    R16Snorm = 65,
+    #[cfg(target_os = "ios")]
+    RG8Unorm = 66,
+    #[cfg(target_os = "ios")]
+    RG8Snorm = 67,
+    #[cfg(target_os = "ios")]
+    RG16Unorm = 68,
+    #[cfg(target_os = "ios")]
+    RG16Snorm = 69,
+    #[cfg(target_os = "ios")]
+    RGBA8Unorm = 70,
+    #[cfg(target_os = "ios")]
+    RGBA8Unorm_sRGB = 71,
+    #[cfg(target_os = "ios")]
+    RGBA8Snorm = 72,
+    #[cfg(target_os = "ios")]
+    RGBA16Unorm = 73,
+    #[cfg(target_os = "ios")]
+    RGBA16Snorm = 74,
+    #[cfg(target_os = "ios")]
+    RGB10A2Unorm = 75,
+    #[cfg(target_os = "ios")]
+    RG11B10Float = 76,
+    #[cfg(target_os = "ios")]
+    RGB9E5Float = 77,
 }
 
 #[repr(u32)]
@@ -101,6 +138,12 @@ pub enum MTLArgumentType {
     ThreadgroupMemory = 1,
     Texture = 2,
     Sampler = 3,
+
+    // all of the below require ios 11.0
+    #[cfg(target_os = "ios")]
+    ImageblockData = 16,
+    #[cfg(target_os = "ios")]
+    Imageblock = 17,
 }
 
 #[repr(u32)]
@@ -309,6 +352,7 @@ impl ArgumentRef {
     }
 }
 
+// requires ios/tvos 11.0+ or macos 10.13+
 pub enum MTLArgumentDescriptor {}
 
 foreign_obj_type! {

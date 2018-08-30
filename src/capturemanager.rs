@@ -9,6 +9,7 @@ use super::*;
 
 use objc_foundation::{INSString, NSString};
 
+// requires ios/tvos 11.0+ or macos 10.13+
 pub enum MTLCaptureScope {}
 
 foreign_obj_type! {
@@ -38,6 +39,7 @@ impl CaptureScopeRef {
     }
 }
 
+// requires ios/tvos 11.0+ or macos 10.13+
 pub enum MTLCaptureManager {}
 
 foreign_obj_type! {

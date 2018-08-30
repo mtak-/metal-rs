@@ -11,6 +11,7 @@ use cocoa::foundation::NSUInteger;
 use objc::runtime::{YES, NO};
 use objc_foundation::{INSString, NSString};
 
+// requires ios/tvos 11.0+ or macos 10.13+
 #[repr(u64)]
 #[allow(non_camel_case_types)]
 #[derive(Clone, Copy, PartialEq, Eq, Hash, Debug)]
@@ -35,6 +36,7 @@ pub enum MTLIndexType {
     UInt32 = 1,
 }
 
+// requires ios/tvos 10.0+ or macos 10.12+
 #[repr(u64)]
 #[allow(non_camel_case_types)]
 #[derive(Clone, Copy, PartialEq, Eq, Hash, Debug)]
@@ -81,8 +83,25 @@ pub enum MTLAttributeFormat {
     UInt4 = 39,
     Int1010102Normalized = 40,
     UInt1010102Normalized = 41,
+    
+    // all of the below require ios/tvos 11.0+ or macos 10.13+
+    UChar4Normalized_BGRA = 42,
+    UChar = 45,
+    Char = 46,
+    UCharNormalized = 47,
+    CharNormalized = 48,
+    
+    // all of the below require ios/tvos 11.0+ or macos 10.13+
+    UShort = 49,
+    Short = 50,
+    UShortNormalized = 51,
+    ShortNormalized = 52,
+    
+    // all of the below require ios/tvos 11.0+ or macos 10.13+
+    Half = 53,
 }
 
+// requires ios/tvos 10.0+ or macos 10.12+
 #[repr(u64)]
 #[allow(non_camel_case_types)]
 #[derive(Clone, Copy, PartialEq, Eq, Hash, Debug)]
@@ -158,24 +177,28 @@ impl ComputePipelineDescriptorRef {
         }
     }
 
+    // requires ios/tvos 10.0+ or macos 10.12+
     pub fn stage_input_descriptor(&self) -> Option<&StageInputOutputDescriptorRef> {
         unsafe {
             msg_send![self, stageInputDescriptor]
         }
     }
 
+    // requires ios/tvos 10.0+ or macos 10.12+
     pub fn set_stage_input_descriptor(&self, descriptor: Option<&StageInputOutputDescriptorRef>) {
         unsafe {
             msg_send![self, setStageInputDescriptor:descriptor]
         }
     }
 
+    // requires ios/tvos 11.0+ or macos 10.13+
     pub fn buffers(&self) -> Option<&PipelineBufferDescriptorArrayRef> {
         unsafe {
             msg_send![self, buffers]
         }
     }
 
+    // requires ios 9.0+ or macos/tvos
     pub fn reset(&self) {
         unsafe {
             msg_send![self, reset]
@@ -192,6 +215,7 @@ foreign_obj_type! {
 }
 
 impl ComputePipelineStateRef {
+    // requires ios/tvos 11.0+ or macos 10.13+
     pub fn label(&self) -> &str {
         unsafe {
             let label: &NSString = msg_send![self, label];
@@ -199,6 +223,7 @@ impl ComputePipelineStateRef {
         }
     }
 
+    // requires ios/tvos 11.0+ or macos 10.13+
     pub fn set_label(&self, label: &str) {
         unsafe {
             let nslabel = NSString::from_str(label);
@@ -218,6 +243,7 @@ impl ComputePipelineStateRef {
         }
     }
 
+    // requires ios/tvos 11.0+ or macos 10.13+
     pub fn static_threadgroup_memory_length(&self) -> NSUInteger {
         unsafe {
             msg_send![self, staticThreadgroupMemoryLength]
@@ -269,6 +295,7 @@ impl PipelineBufferDescriptorRef {
     }
 }
 
+// requires ios/tvos 10.0+ or macos 10.12+
 pub enum MTLStageInputOutputDescriptor {}
 
 foreign_obj_type! {

@@ -35,6 +35,7 @@ impl VertexAttributeRef {
         }
     }
 
+    // requires ios 8.3+ or macos/tvos
     pub fn attribute_type(&self) -> MTLDataType {
         unsafe {
             msg_send![self, attributeType]
@@ -89,6 +90,7 @@ impl FunctionRef {
         }
     }
 
+    // requires ios/tvos 11.0+ or macos 10.13+
     pub fn new_argument_encoder(&self, buffer_index: NSUInteger) -> ArgumentEncoder {
         unsafe {
             let ptr = msg_send![self, newArgumentEncoderWithBufferIndex:buffer_index];
@@ -96,6 +98,7 @@ impl FunctionRef {
         }
     }
 
+    // requires ios/tvos 10.0+ or macos 10.12+
     pub fn function_constants_dictionary(&self) -> *mut Object {
         unsafe {
             msg_send![self, functionConstantsDictionary]
@@ -104,15 +107,16 @@ impl FunctionRef {
 }
 
 #[repr(u64)]
-#[allow(non_camel_case_types)]
 #[derive(Clone, Copy, Debug, Hash, Eq, PartialEq, Ord, PartialOrd)]
 pub enum MTLLanguageVersion {
+    #[cfg(not(target_os = "macos"))]
     V1_0 = 0x10000,
     V1_1 = 0x10001,
     V1_2 = 0x10002,
     V2_0 = 0x20000,
 }
 
+// requires ios/tvos 10.0+ or macos 10.12+
 pub enum MTLFunctionConstantValues {}
 
 foreign_obj_type! {
@@ -178,12 +182,14 @@ impl CompileOptionsRef {
         }
     }
 
+    // requires ios 9.0+ or macos/tvos
     pub fn language_version(&self) -> MTLLanguageVersion {
         unsafe {
             msg_send![self, languageVersion]
         }
     }
 
+    // requires ios 9.0+ or macos/tvos
     pub fn set_language_version(&self, version: MTLLanguageVersion) {
         unsafe {
             msg_send![self, setLanguageVersion:version]
@@ -192,20 +198,11 @@ impl CompileOptionsRef {
 }
 
 #[repr(u64)]
-#[allow(non_camel_case_types)]
 pub enum MTLLibraryError {
     Unsupported      = 1,
     Internal         = 2,
     CompileFailure   = 3,
     CompileWarning   = 4,
-}
-
-#[repr(u64)]
-#[allow(non_camel_case_types)]
-pub enum MTLRenderPipelineError {
-    Internal          = 1,
-    Unsupported       = 2,
-    InvalidInput      = 3,
 }
 
 pub enum MTLLibrary {}

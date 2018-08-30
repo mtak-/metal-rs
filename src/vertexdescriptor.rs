@@ -7,6 +7,7 @@
 
 use cocoa::foundation::NSUInteger;
 
+#[cfg(feature = "private")]
 use libc;
 
 #[repr(u64)]
@@ -55,6 +56,8 @@ pub enum MTLVertexFormat {
     UInt4 = 39,
     Int1010102Normalized = 40,
     UInt1010102Normalized = 41,
+
+    // all of the below require ios/tvos 11.0+ or macos 10.13+
     UChar4Normalized_BGRA = 42,
     UChar = 45,
     Char = 46,
@@ -72,6 +75,11 @@ pub enum MTLVertexStepFunction {
     Constant = 0,
     PerVertex = 1,
     PerInstance = 2,
+
+    // requires ios/tvos 10.0+ or macos 10.12+
+    PerPatch = 3,
+    // requires ios/tvos 10.0+ or macos 10.12+
+    PerPatchControlPoint = 4,
 }
 
 pub enum MTLVertexBufferLayoutDescriptor {}
@@ -260,6 +268,7 @@ impl VertexDescriptorRef {
         }
     }
 
+    #[cfg(feature = "private")]
     pub unsafe fn serialize_descriptor(&self) -> *mut libc::c_void {
         msg_send![self, newSerializedDescriptor]
     }

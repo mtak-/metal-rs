@@ -32,6 +32,14 @@ pub enum MTLCommandBufferError {
     NotPermitted = 7,
     OutOfMemory = 8,
     InvalidResource = 9,
+
+    // requires ios/tvos 10.0+
+    #[cfg(not(target_os = "macos"))]
+    Memoryless = 10,
+
+    // requires macos 10.13+
+    #[cfg(target_os = "macos")]
+    DeviceRemoved = 11,
 }
 
 type _MTLCommandBufferHandler = Block<(MTLCommandBuffer), ()>;

@@ -31,8 +31,11 @@ pub enum MTLCPUCacheMode {
 #[derive(Clone, Copy, PartialEq, Eq, Hash, Debug)]
 pub enum MTLStorageMode {
     Shared  = 0,
+    #[cfg(target_os = "macos")]
     Managed = 1,
     Private = 2,
+    #[cfg(not(target_os = "macos"))]
+    Memoryless = 3,
 }
 
 pub const MTLResourceCPUCacheModeShift: NSUInteger = 0;
@@ -47,11 +50,15 @@ bitflags! {
         const CPUCacheModeWriteCombined = (MTLCPUCacheMode::WriteCombined as NSUInteger) << MTLResourceCPUCacheModeShift;
 
         const StorageModeShared  = (MTLStorageMode::Shared as NSUInteger)  << MTLResourceStorageModeShift;
+        #[cfg(target_os = "macos")]
         const StorageModeManaged = (MTLStorageMode::Managed as NSUInteger) << MTLResourceStorageModeShift;
         const StorageModePrivate = (MTLStorageMode::Private as NSUInteger) << MTLResourceStorageModeShift;
+        #[cfg(not(target_os = "macos"))]
+        const StorageModeMemoryless = (MTLStorageMode::Memoryless as NSUInteger) << MTLResourceStorageModeShift;
     }
 }
 
+// requires ios/tvos 11.0+ macos 10.13+
 bitflags! {
     pub struct MTLResourceUsage: NSUInteger {
         const Read   = 1 << 0;
@@ -96,6 +103,7 @@ impl ResourceRef {
         }
     }
 
+    // requires iOS 9.0+ or macos/tvos
     pub fn storage_mode(&self) -> MTLStorageMode {
         unsafe {
             msg_send![self, storageMode]

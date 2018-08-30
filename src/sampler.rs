@@ -28,13 +28,16 @@ pub enum MTLSamplerMipFilter {
 #[derive(Copy, Clone)]
 pub enum MTLSamplerAddressMode {
     ClampToEdge = 0,
+    #[cfg(target_os = "macos")]
     MirrorClampToEdge = 1,
     Repeat = 2,
     MirrorRepeat = 3,
     ClampToZero = 4,
+    #[cfg(target_os = "macos")]
     ClampToBorderColor = 5
 }
 
+#[cfg(target_os = "macos")]
 #[repr(u64)]
 #[derive(Copy, Clone)]
 pub enum MTLSamplerBorderColor {
@@ -104,16 +107,16 @@ impl SamplerDescriptorRef {
         }
     }
 
+    // requires ios 9.0+ or macos/tvos
     pub fn set_compare_function(&self, func: MTLCompareFunction) {
         unsafe {
             msg_send![self, setCompareFunction:func]
         }
     }
 
-    pub fn set_lod_bias(&self, bias: f32) {
-        unsafe {
-            msg_send![self, setLodBias:bias]
-        }
+    #[cfg(feature = "private")]
+    pub unsafe fn set_lod_bias(&self, bias: f32) {
+        msg_send![self, setLodBias:bias]
     }
 
     pub fn set_lod_min_clamp(&self, clamp: f32) {
@@ -128,6 +131,7 @@ impl SamplerDescriptorRef {
         }
     }
 
+    // requires ios 9.0+ or macos/tvos
     pub fn set_lod_average(&self, enable: bool) {
         unsafe {
             msg_send![self, setLodAverage:enable]
@@ -140,12 +144,14 @@ impl SamplerDescriptorRef {
         }
     }
 
+    // requires ios/tvos 11.0+ or macos 13.0+
     pub fn set_support_argument_buffers(&self, enable: bool) {
         unsafe {
             msg_send![self, setSupportArgumentBuffers:enable]
         }
     }
 
+    #[cfg(target_os = "macos")]
     pub fn set_border_color(&self, color: MTLSamplerBorderColor) {
         unsafe {
             msg_send![self, setBorderColor:color]

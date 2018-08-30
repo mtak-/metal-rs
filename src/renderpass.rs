@@ -23,6 +23,12 @@ pub enum MTLStoreAction {
     DontCare = 0,
     Store = 1,
     MultisampleResolve = 2,
+    // requires ios/tvos 10.0+ or macos 10.12+
+    StoreAndMultisampleResolve = 3,
+    // requires ios/tvos 10.0+ or macos 10.12+
+    Unknown = 4,
+    // requires ios/tvos 11.0+ or macos 10.13+
+    CustomSampleDepthStore = 5,
 }
 
 #[repr(C)]
@@ -337,12 +343,14 @@ impl RenderPassDescriptorRef {
         }
     }
 
+    #[cfg(target_os = "macos")]
     pub fn render_target_array_length(&self) -> NSUInteger {
         unsafe {
             msg_send![self, renderTargetArrayLength]
         }
     }
 
+    #[cfg(target_os = "macos")]
     pub fn set_render_target_array_length(&self, length: NSUInteger) {
         unsafe {
             msg_send![self, setRenderTargetArrayLength:length]
